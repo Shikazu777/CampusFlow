@@ -1,0 +1,24 @@
+# Python
+backend/.venv/
+__pycache__/
+*.pyc
+
+# Node
+dashboard/node_modules/
+
+# Environment files
+.env
+backend/.env
+
+# macOS
+.DS_Store
+
+# Build folders
+dist/
+build/
+
+# Vite
+dashboard/dist/
+
+# Logs
+*.log
