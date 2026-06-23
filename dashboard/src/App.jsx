@@ -15,7 +15,8 @@ import MyOrders
 from "./pages/MyOrders";
 import Community
 from "./pages/Community";
-
+import CreatePost
+from "./pages/CreatePost";
 
 function App() {
   return (
@@ -96,6 +97,14 @@ function App() {
   element={
     <ProtectedRoute>
       <Community />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/create-post"
+  element={
+    <ProtectedRoute>
+      <CreatePost />
     </ProtectedRoute>
   }
 />

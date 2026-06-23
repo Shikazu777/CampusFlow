@@ -1,5 +1,7 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
+import { useNavigate }
+from "react-router-dom";
 
 function Community() {
   return (
