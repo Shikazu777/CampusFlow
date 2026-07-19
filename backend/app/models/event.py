@@ -3,6 +3,8 @@ from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Boolean
 from sqlalchemy import ForeignKey
+from sqlalchemy import DateTime
+from datetime import datetime
 
 from app.database.database import Base
 
@@ -29,7 +31,8 @@ class Event(Base):
     )
 
     event_date = Column(
-        String
+        DateTime,
+        nullable=False
     )
 
     max_capacity = Column(
@@ -51,5 +54,4 @@ class Event(Base):
         Integer,
         ForeignKey("users.id")
     )
-    
-    
+

@@ -26,7 +26,7 @@ async function loadDashboard() {
     setDashboard(data);
 
   } catch (error) {
-    console.log(error);
+
   }
 }
 if (!dashboard) {

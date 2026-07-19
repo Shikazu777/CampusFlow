@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.database.database import get_db
 from app.models.favorite import Favorite
+from app.schemas.favorite import FavoriteCreate, FavoriteResponse
 
 router = APIRouter(
     prefix="/favorites",
@@ -14,10 +15,14 @@ router = APIRouter(
 
 @router.post("/")
 def add_favorite(
-    favorite: dict,
+    favorite: FavoriteCreate,
     db: Session = Depends(get_db)
 ):
-    new_favorite = Favorite(**favorite)
+    new_favorite = Favorite(
+        user_id=favorite.user_id,
+        menu_item_id=favorite.menu_item_id,
+        post_id=favorite.post_id
+    )
 
     db.add(new_favorite)
 

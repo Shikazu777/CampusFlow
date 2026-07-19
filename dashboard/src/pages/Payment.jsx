@@ -38,7 +38,7 @@ function Payment() {
 
       } catch (error) {
 
-        console.log(error);
+
 
         alert(
           "Payment failed"

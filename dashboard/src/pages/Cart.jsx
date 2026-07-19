@@ -43,7 +43,7 @@ function Cart() {
       setCart(details);
 
     } catch (error) {
-      console.log(error);
+
     }
   }
 
@@ -64,7 +64,7 @@ function Cart() {
 
   } catch (error) {
 
-    console.log(error);
+
 
     alert(
       "Checkout failed"

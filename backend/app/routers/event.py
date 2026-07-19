@@ -1,5 +1,5 @@
-from fastapi import APIRouter
-from fastapi import Depends
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import HTTPBearer
 
 from sqlalchemy.orm import Session
 
@@ -8,14 +8,12 @@ from app.database.database import get_db
 from app.models.event import Event
 import uuid
 from app.models.user import User
-from fastapi import HTTPException
-from app.schemas.event import EventBookingRequest
-from app.schemas.event import EventScanRequest
+from app.schemas.event import EventBookingRequest, EventScanRequest, EventCreateRequest, EventMediaCreate
 from app.models.event_booking import EventBooking
 from app.models.notification import Notification
-from app.models.user import User
 from app.models.event_media import EventMedia
 from app.core.rbac import require_roles
+from app.core.security import get_current_user, security
 
 
 router = APIRouter(
@@ -26,29 +24,37 @@ router = APIRouter(
 
 @router.post("/")
 def create_event(
-    
-    
-    event: dict,
+    event: EventCreateRequest,
     db: Session = Depends(get_db)
 ):
     user = (
-    db.query(User)
-    .filter(
-        User.id == event["organizer_user_id"]
+        db.query(User)
+        .filter(
+            User.id == event.organizer_user_id
+        )
+        .first()
     )
-    .first()
-)
 
-    require_roles(
-    user,
-    [3, 4]
- )
-    new_event = Event(**event)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    require_roles(3, 4)(user)
+    
+    new_event = Event(
+        title=event.title,
+        description=event.description,
+        location=event.location,
+        event_date=event.event_date,
+        max_capacity=event.max_capacity,
+        booking_required=event.booking_required,
+        organizer_user_id=event.organizer_user_id
+    )
 
     db.add(new_event)
-
     db.commit()
-
     db.refresh(new_event)
 
     return new_event
@@ -138,7 +144,7 @@ def scan_ticket(
 @router.post("/{event_id}/media")
 def add_event_media(
     event_id: int,
-    media: dict,
+    media: EventMediaCreate,
     db: Session = Depends(get_db)
 ):
     total_media = (
@@ -157,8 +163,8 @@ def add_event_media(
 
     new_media = EventMedia(
         event_id=event_id,
-        media_url=media["media_url"],
-        media_type=media["media_type"]
+        media_url=media.media_url,
+        media_type=media.media_type
     )
 
     db.add(new_media)

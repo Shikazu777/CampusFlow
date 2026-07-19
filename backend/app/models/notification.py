@@ -1,7 +1,4 @@
-from sqlalchemy import Column
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy import ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey
 
 from app.database.database import Base
 
@@ -16,7 +13,8 @@ class Notification(Base):
 
     user_id = Column(
         Integer,
-        ForeignKey("users.id")
+        ForeignKey("users.id"),
+        index=True
     )
 
     message = Column(
@@ -25,5 +23,6 @@ class Notification(Base):
 
     status = Column(
         String,
-        default="UNREAD"
+        default="UNREAD",
+        index=True
     )

@@ -27,7 +27,7 @@ function Food() {
       setFoods(data);
 
     } catch (error) {
-      console.log(error);
+
     }
   }
   async function handleAddToCart(
@@ -41,7 +41,7 @@ function Food() {
 
   } catch (error) {
 
-    console.log(error);
+
 
     alert("Failed");
 

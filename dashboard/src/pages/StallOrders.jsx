@@ -29,7 +29,7 @@ function StallOrders() {
       );
 
     } catch (error) {
-      console.log(error);
+
     }
   }
 
@@ -47,7 +47,7 @@ function StallOrders() {
 
     } catch (error) {
 
-      console.log(error);
+
     }
   }
 

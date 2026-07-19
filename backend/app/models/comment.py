@@ -1,7 +1,4 @@
-from sqlalchemy import Column
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy import ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey
 
 from app.database.database import Base
 
@@ -16,12 +13,14 @@ class Comment(Base):
 
     post_id = Column(
         Integer,
-        ForeignKey("posts.id")
+        ForeignKey("posts.id"),
+        index=True
     )
 
     user_id = Column(
         Integer,
-        ForeignKey("users.id")
+        ForeignKey("users.id"),
+        index=True
     )
 
     content = Column(

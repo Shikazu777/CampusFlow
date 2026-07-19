@@ -34,7 +34,7 @@ function MyOrders() {
 
     } catch (error) {
 
-      console.log(error);
+
     }
   }
 

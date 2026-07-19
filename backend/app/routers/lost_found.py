@@ -8,6 +8,7 @@ from app.database.database import get_db
 
 from app.models.lost_found import LostFound
 from app.models.user import User
+from app.schemas.lost_found import LostFoundCreate, LostFoundResponse
 
 router = APIRouter(
     prefix="/lost-found",
@@ -16,22 +17,22 @@ router = APIRouter(
 
 @router.post("/")
 def create_item(
-    item: dict,
+    item: LostFoundCreate,
     db: Session = Depends(get_db)
 ):
     user = (
         db.query(User)
-        .filter(User.id == item["user_id"])
+        .filter(User.id == item.user_id)
         .first()
     )
 
     new_item = LostFound(
-        user_id=item["user_id"],
+        user_id=item.user_id,
         college_id=user.college_id,
-        title=item["title"],
-        description=item["description"],
-        category=item["category"],
-        is_lost=item["is_lost"]
+        title=item.title,
+        description=item.description,
+        category=item.category,
+        is_lost=item.is_lost
     )
 
     db.add(new_item)

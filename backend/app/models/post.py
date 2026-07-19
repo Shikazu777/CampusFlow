@@ -1,12 +1,7 @@
-from sqlalchemy import Column
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy import ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Index
+from datetime import datetime, timedelta
 
 from app.database.database import Base
-from sqlalchemy import DateTime
-from datetime import datetime
-from datetime import timedelta
 
 
 class Post(Base):
@@ -19,7 +14,8 @@ class Post(Base):
 
     user_id = Column(
         Integer,
-        ForeignKey("users.id")
+        ForeignKey("users.id"),
+        index=True
     )
 
     title = Column(
@@ -44,31 +40,25 @@ class Post(Base):
 
     status = Column(
         String,
-        default="ACTIVE"
+        default="ACTIVE",
+        index=True
     )
     
     college_id = Column(
-    Integer,
-    ForeignKey("colleges.id")
+        Integer,
+        ForeignKey("colleges.id"),
+        index=True
     )
 
     created_at = Column(
         DateTime,
-        default=datetime.utcnow
+        default=datetime.utcnow,
+        index=True
     ) 
     
-    created_at = Column(
-    DateTime,
-    default=datetime.utcnow
-    )
-
     expires_at = Column(
-    DateTime,
-    default=lambda:
-        datetime.utcnow() + timedelta(days=7)
-    )
-    
-    created_at = Column(
-    DateTime,
-    default=datetime.utcnow
+        DateTime,
+        default=lambda:
+            datetime.utcnow() + timedelta(days=7),
+        index=True
     )

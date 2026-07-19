@@ -32,7 +32,7 @@ function QRPage() {
       setOrder(data);
 
     } catch (error) {
-      console.log(error);
+
     }
   }
 

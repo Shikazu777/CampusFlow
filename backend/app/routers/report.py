@@ -99,17 +99,6 @@ def get_pending_reports(
         )
         .all()
     )
-    
-    admin = (
-    db.query(User)
-    .filter(User.id == admin_user_id)
-    .first()
-)
-
-    require_roles(
-    admin,
-    [4]
-)
 
 @router.post("/{report_id}/approve")
 def approve_report(

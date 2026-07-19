@@ -1,8 +1,4 @@
-from sqlalchemy import Column
-from sqlalchemy import Integer
-from sqlalchemy import Float
-from sqlalchemy import String
-from sqlalchemy import ForeignKey
+from sqlalchemy import Column, Integer, Float, String, ForeignKey, Index
 
 from app.database.database import Base
 
@@ -17,7 +13,8 @@ class Order(Base):
 
     user_id = Column(
         Integer,
-        ForeignKey("users.id")
+        ForeignKey("users.id"),
+        index=True
     )
 
     total_amount = Column(
@@ -27,22 +24,23 @@ class Order(Base):
 
     status = Column(
         String,
-        default="PENDING"
+        default="PENDING",
+        index=True
     )
 
     qr_code = Column(
-    String,
-    unique=True,
-    nullable=True
+        String,
+        unique=True,
+        nullable=True
     )
 
     pickup_status = Column(
-    String,
-    default="PENDING"
+        String,
+        default="PENDING",
+        index=True
     )
 
     coins_used = Column(
-    Integer,
-    default=0
-   )
-        
+        Integer,
+        default=0
+    )

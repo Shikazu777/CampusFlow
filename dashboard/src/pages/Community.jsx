@@ -28,7 +28,7 @@ function Community() {
 
     } catch (error) {
 
-      console.log(error);
+
     }
   }
 

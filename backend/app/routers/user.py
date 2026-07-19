@@ -14,7 +14,6 @@ from app.models.order import Order
 from app.models.event_booking import EventBooking
 from app.models.post import Post
 from app.models.cart import Cart
-from app.models.order import Order
 from app.models.order_item import OrderItem
 from app.models.menu_item import MenuItem
 

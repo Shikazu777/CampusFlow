@@ -30,7 +30,7 @@ function QRScanner() {
 
     } catch (error) {
 
-      console.log(error);
+
 
       alert("Invalid QR");
     }

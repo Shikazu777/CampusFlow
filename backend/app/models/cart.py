@@ -1,7 +1,4 @@
-from sqlalchemy import Column
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy import ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey
 
 from app.database.database import Base
 
@@ -16,15 +13,18 @@ class Cart(Base):
 
     user_id = Column(
         Integer,
-        ForeignKey("users.id")
+        ForeignKey("users.id"),
+        index=True
     )
 
     stall_id = Column(
         Integer,
-        ForeignKey("stalls.id")
+        ForeignKey("stalls.id"),
+        index=True
     )
 
     status = Column(
         String,
-        default="ACTIVE"
+        default="ACTIVE",
+        index=True
     )

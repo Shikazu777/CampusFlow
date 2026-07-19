@@ -8,9 +8,11 @@ function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   async function handleLogin(e) {
     e.preventDefault();
+    setError("");
 
     try {
       const response = await api.post(
@@ -21,18 +23,14 @@ function Login() {
         }
       );
 
-      localStorage.setItem(
-        "token",
-        response.data.access_token
-      );
+      const token = response.data.access_token;
+      localStorage.setItem("token", token);
 
       const payload = JSON.parse(
         atob(
-          response.data.access_token.split(".")[1]
+          token.split(".")[1]
         )
       );
-
-      console.log(payload);
 
       localStorage.setItem(
         "user_id",
@@ -42,18 +40,16 @@ function Login() {
       navigate("/dashboard");
 
     } catch (error) {
-      console.log(error);
-
-      alert(
-        error.response?.data?.detail ||
-        "Invalid credentials"
-      );
+      const errorMsg = error.response?.data?.detail || "Login failed. Please try again.";
+      setError(errorMsg);
     }
   }
 
   return (
     <div>
       <h1>CampusFlow Login</h1>
+
+      {error && <div style={{ color: "red", marginBottom: "10px" }}>{error}</div>}
 
       <form onSubmit={handleLogin}>
         <div>
@@ -64,6 +60,7 @@ function Login() {
             onChange={(e) =>
               setEmail(e.target.value)
             }
+            required
           />
         </div>
 
@@ -77,6 +74,7 @@ function Login() {
             onChange={(e) =>
               setPassword(e.target.value)
             }
+            required
           />
         </div>
 

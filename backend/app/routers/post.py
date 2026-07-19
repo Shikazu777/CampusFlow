@@ -1,6 +1,5 @@
-from fastapi import APIRouter
-from fastapi import Depends
-from fastapi import HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import HTTPBearer
 
 from sqlalchemy.orm import Session
 
@@ -10,7 +9,10 @@ from app.models.post import Post
 from app.models.user import User
 from app.models.post_image import PostImage
 
-from app.schemas.post import PostCreate
+from app.schemas.post import PostCreate, PostImageCreate
+
+from app.core.security import get_current_user, security
+from app.core.rbac import require_roles
 
 from datetime import datetime
 
@@ -24,45 +26,32 @@ router = APIRouter(
 @router.post("/")
 def create_post(
     post: PostCreate,
+    credentials: HTTPBearer = Depends(security),
     db: Session = Depends(get_db)
 ):
-    user = (
-        db.query(User)
-        .filter(User.id == post.user_id)
-        .first()
-    )
-
-    if not user:
+    current_user = get_current_user(credentials, db)
+    require_roles(1, 4, 6)(current_user)
+    
+    if not current_user:
         raise HTTPException(
             status_code=404,
             detail="User not found"
         )
 
-    # Only students, faculty and admins can post
-    allowed_roles = [1, 4, 6]
-
-    if user.role_id not in allowed_roles:
-        raise HTTPException(
-            status_code=403,
-            detail="You are not allowed to create posts"
-        )
-
-    # Community timeout check
     if (
-        user.community_timeout_until
+        current_user.community_timeout_until
         and
-        user.community_timeout_until > datetime.utcnow()
+        current_user.community_timeout_until > datetime.utcnow()
     ):
         raise HTTPException(
             status_code=403,
             detail="Community timeout active"
         )
 
-    # Daily post limit
     today_posts = (
         db.query(Post)
         .filter(
-            Post.user_id == post.user_id,
+            Post.user_id == current_user.id,
             Post.created_at >= datetime.utcnow().replace(
                 hour=0,
                 minute=0,
@@ -73,24 +62,21 @@ def create_post(
         .count()
     )
 
-    # Admin can post unlimited
-    if user.role_id != 4 and today_posts >= 1:
+    if current_user.role_id != 4 and today_posts >= 1:
         raise HTTPException(
             status_code=400,
             detail="You have already created a post today"
         )
 
     new_post = Post(
-        user_id=post.user_id,
-        college_id=user.college_id,
+        user_id=current_user.id,
+        college_id=current_user.college_id,
         title=post.title,
         content=post.content
     )
 
     db.add(new_post)
-
     db.commit()
-
     db.refresh(new_post)
 
     return new_post
@@ -179,7 +165,7 @@ def search_posts(
 @router.post("/{post_id}/images")
 def add_post_image(
     post_id: int,
-    image: dict,
+    image: PostImageCreate,
     db: Session = Depends(get_db)
 ):
     image_count = (
@@ -198,7 +184,7 @@ def add_post_image(
 
     new_image = PostImage(
         post_id=post_id,
-        image_url=image["image_url"]
+        image_url=image.image_url
     )
 
     db.add(new_image)

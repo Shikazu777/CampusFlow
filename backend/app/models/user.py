@@ -1,10 +1,6 @@
-from sqlalchemy import Column
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy import ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Index
 
 from app.database.database import Base
-from sqlalchemy import DateTime
 
 
 class User(Base):
@@ -14,36 +10,45 @@ class User(Base):
 
     name = Column(String, nullable=False)
 
-    email = Column(String, unique=True, nullable=False)
+    email = Column(String, unique=True, nullable=False, index=True)
 
     password_hash = Column(String, nullable=False)
+    
     community_timeout_until = Column(
-    DateTime,
-    nullable=True
-)
+        DateTime,
+        nullable=True
+    )
 
     student_id = Column(
         String,
         unique=True,
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     college_id = Column(
         Integer,
-        ForeignKey("colleges.id")
+        ForeignKey("colleges.id"),
+        index=True
     )
 
     role_id = Column(
         Integer,
-        ForeignKey("roles.id")
+        ForeignKey("roles.id"),
+        index=True
     )
 
     coins = Column(
-    Integer,
-    default=0
-   )
+        Integer,
+        default=0
+    )
 
     trust_score = Column(
-    Integer,
-    default=50
+        Integer,
+        default=50
     )
+
+
+__table_args__ = (
+    Index('idx_user_college_role', 'college_id', 'role_id'),
+)
